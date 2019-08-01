@@ -1,0 +1,49 @@
+program : BEGIN statement_list END
+
+parameter_list : variable (COMMA variable)*
+
+compound_statement : LBRACE statement_list RBRACE
+
+statement_list : statement | statement SEMI statement_list
+
+statement : compound_statement
+          | function_call
+          | function_def
+          | assignment_statement
+          | if_else_statement
+          | while_statement
+          | empty
+
+function_def :  FUNCTION variable LPAREN （parameter_list)? RPAREN compound_statement
+
+function_call : variable LPAREN (expr (COMMA expr)*)? RPAREN SEMI
+
+assignment_statement : variable ASSIGN test SEMI
+
+if_else_statement :
+      IF LPAREN test RPAREN compound_statement
+      (ELSE IF LPAREN test RPAREN compound_statement)* (ELSE compound_statement)?
+
+while_statement :  WHILE LPAREN test RPAREN compound_statement SEMI
+
+empty :
+
+test : and_test (OR and_test)*
+
+and_test : comparison (AND comparison)*
+
+comparison : expr ((LESS | GREAT | EQ | NE) expr)*
+
+expr : term ((PLUS | MINUS) term)*
+
+term : factor ((MUL | DIV) factor)*
+
+factor : (PLUS | MINUS) factor | atom
+
+atom :   const
+       | FLOAT_CONST
+       | STRING_CONST
+       | LPAREN test RPAREN
+       | variable
+
+variable: VARID | FUNCID
