@@ -62,8 +62,10 @@ vector<AST*> Parser::statement_list() {
   vector<AST*> list;
   list.push_back(statement());
 
-  while (current_token.type == SEMI) {
-    eat(SEMI);
+  while (current_token.type == FUNCID || current_token.type == FUNCTION ||\
+     current_token.type == VARID  || current_token.type == IF ||\
+      current_token.type == WHILE) {
+
     list.push_back(statement());
   }
   return list;
@@ -74,10 +76,7 @@ AST* Parser::statement() {
 //cout << "VISIT statement" << endl;
   AST *p = new AST;
 
-  if (current_token.type == LBRACE) {
-    p = compound_statement();
-  }
-  else if (current_token.type == FUNCTION) {
+  if (current_token.type == FUNCTION) {
     p = function_def();
   }
   else if (current_token.type == FUNCID) {
@@ -129,6 +128,7 @@ AST* Parser::function_call() {
     }
   }
   eat(RPAREN);
+  eat(SEMI);
   return p;
 }
 
@@ -141,6 +141,7 @@ AST* Parser::assignment_statement() {
   p->op = current_token;
   eat(ASSIGN);
   p->right = test();
+  eat(SEMI);
   return p;
 }
 

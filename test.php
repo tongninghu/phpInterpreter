@@ -8,7 +8,7 @@
 
 	function myTest($k) {
 		if ($k > 0) {
-			while ($k > 0) {
+			while ($k != 0) {
 				$k = $k - 1;
 			}
 		}

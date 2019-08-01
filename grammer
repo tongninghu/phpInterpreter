@@ -4,10 +4,9 @@ parameter_list : variable (COMMA variable)*
 
 compound_statement : LBRACE statement_list RBRACE
 
-statement_list : statement | statement SEMI statement_list
+statement_list : statement | statement statement_list
 
-statement : compound_statement
-          | function_call
+statement : function_call
           | function_def
           | assignment_statement
           | if_else_statement
@@ -24,7 +23,7 @@ if_else_statement :
       IF LPAREN test RPAREN compound_statement
       (ELSE IF LPAREN test RPAREN compound_statement)* (ELSE compound_statement)?
 
-while_statement :  WHILE LPAREN test RPAREN compound_statement SEMI
+while_statement :  WHILE LPAREN test RPAREN compound_statement
 
 empty :
 
