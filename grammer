@@ -1,6 +1,6 @@
 program : BEGIN statement_list END
 
-parameter_list : variable (COMMA variable)*
+parameter_list : variable_def (COMMA variable_def)*
 
 compound_statement : LBRACE statement_list RBRACE
 
@@ -13,11 +13,11 @@ statement : function_call
           | while_statement
           | empty
 
-function_def :  FUNCTION variable LPAREN （parameter_list)? RPAREN compound_statement
+function_def :  FUNCTION variable_def LPAREN （parameter_list)? RPAREN compound_statement
 
 function_call : variable LPAREN (expr (COMMA expr)*)? RPAREN SEMI
 
-assignment_statement : variable ASSIGN test SEMI
+assignment_statement : variable_def ASSIGN test SEMI
 
 if_else_statement :
       IF LPAREN test RPAREN compound_statement
@@ -46,3 +46,5 @@ atom :   const
        | variable
 
 variable: VARID | FUNCID
+
+variable_def: VARID | FUNCID

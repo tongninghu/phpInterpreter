@@ -1,9 +1,10 @@
 #ifndef PARSER_H
 #define	PARSER_H
 
+#include "Lexer.h"
 #include <string>
 #include <vector>
-#include "Lexer.h"
+
 
 class SemanticAnalyzer;
 
@@ -12,18 +13,20 @@ using namespace std;
 class AST {
   public:
     virtual void visit(SemanticAnalyzer* a) {}
+    virtual Token getToken() {}
 };
 
 class Program: public AST{
   public:
     vector<AST*> children;
 
+    ~Program();
     virtual void visit(SemanticAnalyzer* a);
 };
 
 class Constant: public AST {
   public:
-    Token value;
+    Token t;
 
     virtual void visit(SemanticAnalyzer* a);
 };
@@ -33,6 +36,7 @@ class UnaryOP: public AST {
     Token op;
     AST* expr;
 
+    ~UnaryOP();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -42,6 +46,7 @@ class BinaryOP: public AST {
     Token op;
     AST* right;
 
+    ~BinaryOP();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -49,6 +54,7 @@ class Compound: public AST {
   public:
     vector<AST*> children;
 
+    ~Compound();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -58,13 +64,23 @@ class Assign: public AST {
     Token op;
     AST* right;
 
+    ~Assign();
     virtual void visit(SemanticAnalyzer* a);
 };
 
 class Var: public AST{
   public:
-    Token name;
+    Token t;
+    string value;
+    virtual Token getToken();
+    virtual void visit(SemanticAnalyzer* a);
+};
 
+class VarDecl: public AST{
+  public:
+    Token t;
+    string value;
+    virtual Token getToken();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -72,6 +88,7 @@ class IfAndElse: public AST{
   public:
     vector<AST*> children;
 
+    ~IfAndElse();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -80,6 +97,7 @@ class IfOrElse: public AST{
     AST* test;
     AST* compound;
 
+    ~IfOrElse();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -88,6 +106,7 @@ class While: public AST{
     AST* test;
     AST* compound;
 
+    ~While();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -97,6 +116,7 @@ class FunctionDecl: public AST{
     vector<AST*> parameters;
     AST* compound;
 
+    ~FunctionDecl();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -105,6 +125,7 @@ class FunctionCall: public AST{
     AST* id;
     vector<AST*> parameters;
 
+    ~FunctionCall();
     virtual void visit(SemanticAnalyzer* a);
 };
 
@@ -139,6 +160,7 @@ class Parser{
     AST* factor();  // UnaryOP* | return from atom
     AST* atom();   // Constant* | BinaryOP* | Var*
     AST* variable();  // Var*
+    AST* variable_def();  // Var*
 };
 
 #endif

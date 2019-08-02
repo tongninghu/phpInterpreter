@@ -18,18 +18,10 @@ int main(int argc, char * argv[]) {
 	}
 
 	Lexer lexer(fp);
-/*
-	Token e;
-	Token t;
-
-	t = lexer.get_next_token();
-	while (t != e) {
-			t.print();
-			t = lexer.get_next_token();
-	}  */
 	Parser parser(&lexer);
 	AST* tree = parser.program();
 	SemanticAnalyzer s;
 	s.NodeVisit(tree);
+	delete tree;
 	return 0;
 }

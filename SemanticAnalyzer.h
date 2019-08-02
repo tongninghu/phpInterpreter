@@ -14,28 +14,31 @@ class Symbol {
 
 class VarSymbol: public Symbol {
   public:
-    TokenType type;
-
-    VarSymbol(TokenType t);
+    Token t;
+    string value;
+    VarSymbol(Token t);
 };
 
 class FuntionSymbol: public Symbol {
   public:
-    TokenType type;
+    Token t;
     vector<Symbol> parameters;
+    FuntionSymbol(Token t);
 };
+
 
 class ScopedSymbolTable {
   private:
-      unordered_map<string, Symbol> symbols;
+      unordered_map<string, Symbol*> symbols;
   public:
     string scope_name;
     int scope_level;
     ScopedSymbolTable* enclosing_scope;
 
     ScopedSymbolTable(string name = "global", int c = 0, ScopedSymbolTable* scope = NULL);
-    void insert(Symbol s);
-    Symbol LookUp(string name);
+    ~ScopedSymbolTable();
+    void insert(Symbol* s);
+    Symbol* LookUp(string name, bool SearchEnclosing = false);
 };
 
 
@@ -44,6 +47,7 @@ class SemanticAnalyzer {
     ScopedSymbolTable* current_scope;
     int current_level;
 
+    ~SemanticAnalyzer();
     void NodeVisit(AST* tree);
 };
 
