@@ -2,6 +2,105 @@
 
 using namespace std;
 
+void Program::visit(SemanticAnalyzer* a) {   // create symbol table
+  //cout << "visit program" << endl;
+  ScopedSymbolTable* p = new ScopedSymbolTable();
+  a->current_scope = p;
+  a->current_level = 0;
+
+  for (int i = 0; i < children.size(); i++) {
+    children[i]->visit(a);
+  }
+  //cout << "leave program" << endl;
+}
+
+void Constant::visit(SemanticAnalyzer* a) {
+  //cout << "visit Constant" << endl;
+  value.print();
+  //cout << "leave Constant" << endl;
+}
+
+void UnaryOP::visit(SemanticAnalyzer* a) {
+  //cout << "visit UnaryOP" << endl;
+  expr->visit(a);
+  //cout << "leave UnaryOP" << endl;
+}
+
+void BinaryOP::visit(SemanticAnalyzer* a) {
+  //cout << "visit BinaryOP" << endl;
+  left->visit(a);
+  right->visit(a);
+  op.print();
+  //cout << "leave BinaryOP" << endl;
+}
+
+void Compound::visit(SemanticAnalyzer* a) {
+  //cout << "visit Compound" << endl;
+  for (int i = 0; i < children.size(); i++) {
+    children[i]->visit(a);
+  }
+  //cout << "leave Compound" << endl;
+}
+
+void Assign::visit(SemanticAnalyzer* a) {
+  //cout << "visit Assign" << endl;
+
+  right->visit(a);
+  left->visit(a);
+  op.print();
+  //cout << "leave Assign" << endl;
+}
+
+void Var::visit(SemanticAnalyzer* a) {
+  //cout << "visit Var" << endl;
+  name.print();
+  //cout << "leave Var" << endl;
+}
+
+void IfAndElse::visit(SemanticAnalyzer* a) {
+  //cout << "visit IfAndElse" << endl;
+  for (int i = 0; i < children.size(); i++) {
+    children[i]->visit(a);
+  }
+  //cout << "leave IfAndElse" << endl;
+}
+
+void IfOrElse::visit(SemanticAnalyzer* a) {   // create symbol table
+  //cout << "visit IfOrElse" << endl;
+  test->visit(a);
+  compound->visit(a);
+  //cout << "leave IfOrElse" << endl;
+}
+
+void While::visit(SemanticAnalyzer* a) {   // create symbol table
+  //cout << "visit While" << endl;
+  test->visit(a);
+  compound->visit(a);
+  //cout << "leave While" << endl;
+}
+
+void FunctionDecl::visit(SemanticAnalyzer* a) {   // create symbol table
+  //cout << "visit FunctionDecl" << endl;
+  id->visit(a);
+  for (int i = 0; i < parameters.size(); i++) {
+    parameters[i]->visit(a);
+  }
+  compound->visit(a);
+  //cout << "leave FunctionDecl" << endl;
+}
+
+void FunctionCall::visit(SemanticAnalyzer* a) {
+  //cout << "visit FunctionCall" << endl;
+  id->visit(a);
+  for (int i = 0; i < parameters.size(); i++) {
+    parameters[i]->visit(a);
+  }
+  //cout << "leave FunctionCall" << endl;
+}
+
+
+
+
 Parser::Parser(Lexer* l) {
   lexer = l;
   current_token = get_next_token();
@@ -13,7 +112,7 @@ Token Parser::get_next_token() {
 
 void Parser::eat(TokenType type) {
   if (current_token.type == type) {
-    cout << "eat type: " << current_token.type << ", with value: " << current_token.value << endl;
+  //  cout << "eat type: " << current_token.type << ", with value: " << current_token.value << endl;
     current_token = get_next_token();
   }
   else {
@@ -25,7 +124,7 @@ void Parser::eat(TokenType type) {
 
 // Program*
 AST* Parser::program() {
-//cout << "VISIT program" << endl;
+////cout << "visit program" << endl;
   eat(BEGIN);
   Program* p = new Program;
   p->children = statement_list();
@@ -35,7 +134,7 @@ AST* Parser::program() {
 
  // vector<Var*>
 vector<AST*> Parser::parameter_list() {
-//cout << "VISIT parameter_list" << endl;
+////cout << "visit parameter_list" << endl;
   vector<AST*> list;
   list.push_back(variable());
 
@@ -48,7 +147,7 @@ vector<AST*> Parser::parameter_list() {
 
 // Compound*
 AST* Parser::compound_statement() {
-//cout << "VISIT compound_statement" << endl;
+////cout << "visit compound_statement" << endl;
   Compound* p = new Compound;
   eat(LBRACE);
   p->children = statement_list();
@@ -58,7 +157,7 @@ AST* Parser::compound_statement() {
 
 // vector<return from statement>
 vector<AST*> Parser::statement_list() {
-//cout << "VISIT statement_list" << endl;
+////cout << "visit statement_list" << endl;
   vector<AST*> list;
   list.push_back(statement());
 
@@ -73,7 +172,7 @@ vector<AST*> Parser::statement_list() {
 
 // Compound* | FunctionDecl* | FunctionCall* | Assign* | IfAndElse* | While* | NoOp*
 AST* Parser::statement() {
-//cout << "VISIT statement" << endl;
+////cout << "visit statement" << endl;
   AST *p = new AST;
 
   if (current_token.type == FUNCTION) {
@@ -99,7 +198,7 @@ AST* Parser::statement() {
 
 // FunctionDecl*
 AST* Parser::function_def() {
-//cout << "VISIT function_def" << endl;
+////cout << "visit function_def" << endl;
   FunctionDecl* p = new FunctionDecl;
 
   eat(FUNCTION);
@@ -115,7 +214,7 @@ AST* Parser::function_def() {
 
 //  FunctionCall*
 AST* Parser::function_call() {
-//cout << "VISIT function_call" << endl;
+////cout << "visit function_call" << endl;
   FunctionCall* p = new FunctionCall;
 
   p->id = variable();
@@ -134,7 +233,7 @@ AST* Parser::function_call() {
 
 // Assign*
 AST* Parser::assignment_statement() {
-//cout << "VISIT assignment_statement" << endl;
+////cout << "visit assignment_statement" << endl;
   Assign* p = new Assign;
 
   p->left = variable();
@@ -147,7 +246,7 @@ AST* Parser::assignment_statement() {
 
 // IfAndElse*
 AST* Parser::if_statement() {
-//cout << "VISIT if_statement" << endl;
+////cout << "visit if_statement" << endl;
   IfAndElse* p = new IfAndElse;
 
   p->children.push_back(ifelse());
@@ -159,7 +258,7 @@ AST* Parser::if_statement() {
 
 // IfOrElse*
 AST* Parser::ifelse() {
-//cout << "VISIT ifelse" << endl;
+////cout << "visit ifelse" << endl;
   IfOrElse* p = new IfOrElse;
   if (current_token.type == IF) {
     eat(IF);
@@ -182,7 +281,7 @@ AST* Parser::ifelse() {
 
 // While*
 AST* Parser::while_statement() {
-//cout << "VISIT while_statement" << endl;
+////cout << "visit while_statement" << endl;
   While* p = new While;
 
   eat(WHILE);
@@ -195,14 +294,14 @@ AST* Parser::while_statement() {
 
 // NoOp*
 AST* Parser::empty() {
-//cout << "VISIT empty" << endl;
+////cout << "visit empty" << endl;
   NoOp* p = new NoOp;
   return p;
 }
 
 // BinaryOp*
 AST* Parser::test() {
-//cout << "VISIT test" << endl;
+////cout << "visit test" << endl;
   AST* p = and_test();
 
   while (current_token.type == OR) {
@@ -218,7 +317,7 @@ AST* Parser::test() {
 
 // BinaryOp*
 AST* Parser::and_test() {
-//cout << "VISIT and_test" << endl;
+////cout << "visit and_test" << endl;
   AST* p = comparison();
 
   while (current_token.type == AND) {
@@ -234,7 +333,7 @@ AST* Parser::and_test() {
 
 // BinaryOp*
 AST* Parser::comparison() {
-//cout << "VISIT comparison" << endl;
+////cout << "visit comparison" << endl;
   AST* p = expr();
 
   while (current_token.type == LESS || current_token.type == GREAT || current_token.type == EQ\
@@ -252,7 +351,7 @@ AST* Parser::comparison() {
 
 // BinaryOp*
 AST* Parser::expr() {
-//cout << "VISIT expr" << endl;
+////cout << "visit expr" << endl;
   AST* p = term();
 
   while (current_token.type == PLUS || current_token.type == MINUS) {
@@ -268,7 +367,7 @@ AST* Parser::expr() {
 
 // BinaryOP*
 AST* Parser::term() {
-//cout << "VISIT term" << endl;
+////cout << "visit term" << endl;
   AST* p = factor();
 
   while (current_token.type == MUL || current_token.type == DIV) {
@@ -284,7 +383,7 @@ AST* Parser::term() {
 
 // UnaryOP* | return from atom
 AST* Parser::factor() {
-//cout << "VISIT factor" << endl;
+////cout << "visit factor" << endl;
   if (current_token.type == PLUS || current_token.type == MINUS) {
     UnaryOP* p = new UnaryOP;
     p->op = current_token;
@@ -299,7 +398,7 @@ AST* Parser::factor() {
 
  // Constant* | BinaryOP* | Variable*
 AST* Parser::atom() {
-//cout << "VISIT atom" << endl;
+////cout << "visit atom" << endl;
   if (current_token.type == INTEGER_CONST || current_token.type == FLOAT_CONST ||\
      current_token.type == STRING_CONST) {
     Constant* p = new Constant;
@@ -320,7 +419,7 @@ AST* Parser::atom() {
 
  // Var*
 AST* Parser::variable() {
-//cout << "VISIT variable" << endl;
+////cout << "visit variable" << endl;
   Var* p = new Var;
   p->name = current_token;
   eat(current_token.type);

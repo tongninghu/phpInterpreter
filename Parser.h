@@ -5,24 +5,35 @@
 #include <vector>
 #include "Lexer.h"
 
+class SemanticAnalyzer;
+
 using namespace std;
 
-class AST {};
+class AST {
+  public:
+    virtual void visit(SemanticAnalyzer* a) {}
+};
 
 class Program: public AST{
   public:
     vector<AST*> children;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class Constant: public AST {
   public:
     Token value;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class UnaryOP: public AST {
   public:
     Token op;
     AST* expr;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class BinaryOP: public AST {
@@ -30,11 +41,15 @@ class BinaryOP: public AST {
     AST* left;
     Token op;
     AST* right;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class Compound: public AST {
   public:
     vector<AST*> children;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class Assign: public AST {
@@ -42,28 +57,38 @@ class Assign: public AST {
     AST* left;
     Token op;
     AST* right;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class Var: public AST{
   public:
     Token name;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class IfAndElse: public AST{
   public:
     vector<AST*> children;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class IfOrElse: public AST{
   public:
     AST* test;
     AST* compound;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class While: public AST{
   public:
     AST* test;
     AST* compound;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class FunctionDecl: public AST{
@@ -71,12 +96,16 @@ class FunctionDecl: public AST{
     AST* id;
     vector<AST*> parameters;
     AST* compound;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class FunctionCall: public AST{
   public:
     AST* id;
     vector<AST*> parameters;
+
+    virtual void visit(SemanticAnalyzer* a);
 };
 
 class NoOp: public AST{};
@@ -89,6 +118,7 @@ class Parser{
     Parser(Lexer* l);
     Token get_next_token();
     void eat(TokenType type);
+
     AST* program(); // Program*
     vector<AST*> parameter_list(); // vector<Var*>
     AST* compound_statement(); // Compound*

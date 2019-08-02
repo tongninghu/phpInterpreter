@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "Parser.h"
+#include "SemanticAnalyzer.h"
 
 using namespace std;
 
@@ -29,5 +29,7 @@ int main(int argc, char * argv[]) {
 	}  */
 	Parser parser(&lexer);
 	AST* tree = parser.program();
+	SemanticAnalyzer s;
+	s.NodeVisit(tree);
 	return 0;
 }
