@@ -11,6 +11,7 @@ statement : function_call
           | assignment_statement
           | if_else_statement
           | while_statement
+          | echo_statement
           | empty
 
 function_def :  FUNCTION variable_def LPAREN （parameter_list)? RPAREN compound_statement
@@ -18,6 +19,8 @@ function_def :  FUNCTION variable_def LPAREN （parameter_list)? RPAREN compound
 function_call : variable LPAREN (expr (COMMA expr)*)? RPAREN SEMI
 
 assignment_statement : variable_def ASSIGN test SEMI
+
+echo_statement : ECHO expr SEMI
 
 if_else_statement :
       IF LPAREN test RPAREN compound_statement

@@ -10,26 +10,38 @@ using namespace std;
 class Symbol {
   public:
     string name = "";
+
+    virtual string& getValue() {}
+    virtual TokenType& getValueType() {}
+    virtual AST* getTreeNode(){}
 };
+
 
 class VarSymbol: public Symbol {
   public:
     Token t;
+    TokenType valueType;
     string value;
+
+    virtual string& getValue();
+    virtual TokenType& getValueType();
     VarSymbol(Token t);
 };
+
 
 class FuntionSymbol: public Symbol {
   public:
     Token t;
-    vector<Symbol> parameters;
-    FuntionSymbol(Token t);
+    AST* node;
+
+    virtual AST* getTreeNode();
+    FuntionSymbol(Token t, AST* node);
 };
 
 
 class ScopedSymbolTable {
   private:
-      unordered_map<string, Symbol*> symbols;
+    unordered_map<string, Symbol*> symbols;
   public:
     string scope_name;
     int scope_level;

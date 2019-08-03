@@ -2,21 +2,48 @@
 
 using namespace std;
 
+/*-----------------VarSymbol-------------------------------------*/
+
+string& VarSymbol::getValue() {
+  return value;
+}
+
+TokenType& VarSymbol::getValueType() {
+  return valueType;
+}
+
 VarSymbol::VarSymbol(Token t) {
   this->t = t;
   this->name = t.value;
 }
 
-FuntionSymbol::FuntionSymbol(Token t) {
+
+/*-----------------FuntionSymbol-------------------------------------*/
+
+AST* FuntionSymbol::getTreeNode(){
+  return node;
+}
+
+
+FuntionSymbol::FuntionSymbol(Token t, AST* node) {
   this->t = t;
   this->name = t.value;
+  this->node = node;
 }
+
+
+/*-----------------ScopedSymbolTable-------------------------------------*/
+
+
+
 
 ScopedSymbolTable::ScopedSymbolTable(string name, int c, ScopedSymbolTable* scope) {
   scope_name = name;
   scope_level = c;
   enclosing_scope = scope;
 }
+
+
 
 ScopedSymbolTable::~ScopedSymbolTable() {
   delete enclosing_scope;
@@ -25,9 +52,12 @@ ScopedSymbolTable::~ScopedSymbolTable() {
   }
 }
 
+
 void ScopedSymbolTable::insert(Symbol* s) {
   symbols.insert({s->name, s});
 }
+
+
 
 Symbol* ScopedSymbolTable::LookUp(string name, bool SearchEnclosing) {
   if (symbols.find(name) != symbols.end()) {

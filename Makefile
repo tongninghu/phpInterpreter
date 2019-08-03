@@ -1,5 +1,8 @@
-test: Lexer.o main.o Parser.o
-	clang++ -std=c++11 -g -w main.o SemanticAnalyzer.o Parser.o Lexer.o -o test
+test: Lexer.o main.o Parser.o TreeNode.o
+	clang++ -std=c++11 -g -w main.o SemanticAnalyzer.o Parser.o TreeNode.o Lexer.o -o test
+
+TreeNode.o: TreeNode.h TreeNode.cpp
+	clang++ -std=c++11 -g -w -c TreeNode.cpp
 
 Lexer.o: Lexer.h Lexer.cpp
 	clang++ -std=c++11 -g -w -c Lexer.cpp
@@ -17,4 +20,4 @@ run:
 	./test test.php
 
 clean:
-	rm -f test Lexer.o main.o Parser.o SemanticAnalyzer.o
+	rm -f test Lexer.o main.o Parser.o SemanticAnalyzer.o TreeNode.o

@@ -3,212 +3,6 @@
 
 using namespace std;
 
-Program::~Program() {
-  for (int i = 0; i < children.size(); i++) {
-    delete children[i];
-  }
-}
-
-void Program::visit(SemanticAnalyzer* a) {   // create symbol table
-  //cout << "visit program" << endl;
-  ScopedSymbolTable* p = new ScopedSymbolTable;
-  a->current_scope = p;
-  a->current_level = 0;
-
-  for (int i = 0; i < children.size(); i++) {
-    children[i]->visit(a);
-  }
-  //cout << "leave program" << endl;
-}
-
-void Constant::visit(SemanticAnalyzer* a) {
-  //cout << "visit Constant" << endl;
-  //value.print();
-  //cout << "leave Constant" << endl;
-}
-
-UnaryOP::~UnaryOP() {
-  delete expr;
-}
-
-void UnaryOP::visit(SemanticAnalyzer* a) {
-  //cout << "visit UnaryOP" << endl;
-  expr->visit(a);
-  //cout << "leave UnaryOP" << endl;
-}
-
-BinaryOP::~BinaryOP() {
-  delete left;
-  delete right;
-}
-
-void BinaryOP::visit(SemanticAnalyzer* a) {
-  //cout << "visit BinaryOP" << endl;
-  left->visit(a);
-  right->visit(a);
-  //op.print();
-  //cout << "leave BinaryOP" << endl;
-}
-
-Compound::~Compound() {
-  for (int i = 0; i < children.size(); i++) {
-    delete children[i];
-  }
-}
-
-void Compound::visit(SemanticAnalyzer* a) {
-  //cout << "visit Compound" << endl;
-  for (int i = 0; i < children.size(); i++) {
-    children[i]->visit(a);
-  }
-  //cout << "leave Compound" << endl;
-}
-
-Assign::~Assign() {
-  delete left;
-  delete right;
-}
-
-void Assign::visit(SemanticAnalyzer* a) {
-  //cout << "visit Assign" << endl;
-
-  right->visit(a);
-  left->visit(a);
-  //op.print();
-  //cout << "leave Assign" << endl;
-}
-
-Token Var::getToken() {
-  return t;
-}
-
-void Var::visit(SemanticAnalyzer* a) {
-  //cout << "visit Var" << endl;
-  Symbol* s = a->current_scope->LookUp(t.value, true);
-  if (s->name == "") {
-    cout << "undefined variable" << endl;
-    exit;
-  }
-
-  //name.print();
-  //cout << "leave Var" << endl;
-}
-
-Token VarDecl::getToken() {
-  return t;
-}
-
-void VarDecl::visit(SemanticAnalyzer* a) {
-  //cout << "visit VarDecl" << endl;
-  Symbol* s = a->current_scope->LookUp(t.value);
-  if (s->name == "") {
-    VarSymbol *v = new VarSymbol(t);
-    a->current_scope->insert(v);
-  }
-  //name.print();
-  //cout << "leave VarDecl" << endl;
-}
-
-IfAndElse::~IfAndElse() {
-  for (int i = 0; i < children.size(); i++) {
-    delete children[i];
-  }
-}
-
-void IfAndElse::visit(SemanticAnalyzer* a) {
-  //cout << "visit IfAndElse" << endl;
-  for (int i = 0; i < children.size(); i++) {
-    children[i]->visit(a);
-  }
-  //cout << "leave IfAndElse" << endl;
-}
-
-IfOrElse::~IfOrElse() {
-  delete test;
-  delete compound;
-}
-
-void IfOrElse::visit(SemanticAnalyzer* a) {   // create symbol table
-  //cout << "visit IfOrElse" << endl;
-  ScopedSymbolTable* table = new ScopedSymbolTable("ifelse", a->current_level + 1,\
-   a->current_scope);
-  a->current_scope = table;
-  a->current_level += 1;
-
-  test->visit(a);
-  compound->visit(a);
-
-  a->current_scope = a->current_scope->enclosing_scope;
-  a->current_level -= 1;
-  //cout << "leave IfOrElse" << endl;
-}
-
-While::~While() {
-  delete test;
-  delete compound;
-}
-
-void While::visit(SemanticAnalyzer* a) {   // create symbol table
-  //cout << "visit While" << endl;
-  ScopedSymbolTable* table = new ScopedSymbolTable("while", a->current_level + 1,\
-   a->current_scope);
-  a->current_scope = table;
-  a->current_level += 1;
-
-  test->visit(a);
-  compound->visit(a);
-
-  a->current_scope = a->current_scope->enclosing_scope;
-  a->current_level -= 1;
-  //cout << "leave While" << endl;
-}
-
-FunctionDecl::~FunctionDecl() {
-  delete id;
-  for (int i = 0; i < parameters.size(); i++) {
-    delete parameters[i];
-  }
-  delete compound;
-}
-
-void FunctionDecl::visit(SemanticAnalyzer* a) {   // create symbol table
-  //cout << "visit FunctionDecl" << endl;
-  FuntionSymbol *f = new FuntionSymbol(id->getToken());
-  a->current_scope->insert(f);
-  ScopedSymbolTable* table = new ScopedSymbolTable("function", a->current_level\
-   + 1, a->current_scope);
-  a->current_scope = table;
-  a->current_level += 1;
-
-  id->visit(a);
-  for (int i = 0; i < parameters.size(); i++) {
-    parameters[i]->visit(a);
-  }
-  compound->visit(a);
-
-  a->current_scope = a->current_scope->enclosing_scope;
-  a->current_level -= 1;
-  //cout << "leave FunctionDecl" << endl;
-}
-
-FunctionCall::~FunctionCall() {
-  delete id;
-  for (int i = 0; i < parameters.size(); i++) {
-    delete parameters[i];
-  }
-}
-
-void FunctionCall::visit(SemanticAnalyzer* a) {
-  //cout << "visit FunctionCall" << endl;
-  id->visit(a);
-  for (int i = 0; i < parameters.size(); i++) {
-    parameters[i]->visit(a);
-  }
-  //cout << "leave FunctionCall" << endl;
-}
-
-/*-------------------------------------------------------------------*/
-
 
 Parser::Parser(Lexer* l) {
   lexer = l;
@@ -221,15 +15,14 @@ Token Parser::get_next_token() {
 
 void Parser::eat(TokenType type) {
   if (current_token.type == type) {
-    //cout << "eat type: " << current_token.type << ", with value: "
-    // << current_token.value << endl;
+  //  cout << "eat value: " << current_token.value << endl;
     current_token = get_next_token();
   }
   else {
     cout << "error unmatched token, want to match: " << type << ", current is: "\
      << current_token.type << ", row: " << current_token.row << ", col: "\
       << current_token.column << endl;
-    exit;
+    exit(0);
   }
 }
 
@@ -270,7 +63,7 @@ vector<AST*> Parser::statement_list() {
 
   while (current_token.type == FUNCID || current_token.type == FUNCTION ||\
      current_token.type == VARID  || current_token.type == IF ||\
-      current_token.type == WHILE) {
+      current_token.type == WHILE || current_token.type == ECHO) {
 
     list.push_back(statement());
   }
@@ -288,13 +81,16 @@ AST* Parser::statement() {
     p = function_call();
   }
   else if (current_token.type == VARID) {
-    p = assignment_statement();
+    p = assign_statement();
   }
   else if (current_token.type == IF) {
     p = if_statement();
   }
   else if (current_token.type == WHILE) {
     p = while_statement();
+  }
+  else if (current_token.type == ECHO) {
+    p = echo_statement();
   }
   else {
     p = empty();
@@ -336,13 +132,24 @@ AST* Parser::function_call() {
 }
 
 // Assign*
-AST* Parser::assignment_statement() {
+AST* Parser::assign_statement() {
   Assign* p = new Assign;
 
   p->left = variable_def();
-  p->op = current_token;
-  eat(ASSIGN);
-  p->right = test();
+  if (current_token.type == ASSIGN) {
+    p->op = current_token;
+    eat(ASSIGN);
+    p->right = test();
+  }
+  eat(SEMI);
+  return p;
+}
+
+AST* Parser::echo_statement() {
+  Echo* p = new Echo;
+
+  eat(ECHO);
+  p->expr = expr();
   eat(SEMI);
   return p;
 }

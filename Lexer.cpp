@@ -127,7 +127,7 @@ Token Lexer::findNumber() {
     if (current_char == '.') {
       if (n == 1) {
         cout << "error number with row = " << row << " and col = " << column << endl;
-        exit;
+        exit(0);
       }
       else {
         n++;
@@ -156,7 +156,7 @@ Token Lexer::findString() {
   if (current_char == '"') advance();
   else {
     cout << "error string with row = " << row << " and col = " << column << endl;
-    exit;
+    exit(0);
   }
   Token t(STRING_CONST, s, row, column);
   return t;
@@ -239,7 +239,7 @@ Token Lexer::get_next_token() {
       return t;
     }
     cout << "error token with row = " << row << " and col = " << column << endl;
-    exit;
+    exit(0);
   }
   return t;
 }
