@@ -42,7 +42,7 @@ term : factor ((MUL | DIV) factor)*
 
 factor : (PLUS | MINUS) factor | atom
 
-atom :   const
+atom :   INTEGER_CONST
        | FLOAT_CONST
        | STRING_CONST
        | LPAREN test RPAREN

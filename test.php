@@ -1,36 +1,52 @@
 <?php
-	$username= "tongning";
+	$username = "tongning";
 	$password = 115823;
 	$a = 4;
 	$b = -1;
 	$c;
-	echo "in global a = ";
+
+	echo "\nin global, a = ";
 	echo $a;
 
-	if ($username == "tongning") {
-		$a = 2;
-		echo "\nin if_statement a = ";
+	if ($username == "yunfeng") {
+		echo "\nenter if";
+	}
+	else if ($username == "tongning") {
+		$a = $b + 1;
+		echo "\nenter else if, a = ";
 		echo $a;
 	}
+	else {
+		echo "\nenter else";
+	}
+
+	echo "\nin global, a = ";
+	echo $a;
 
 	function myTest($k) {
 		$b = 2;
-		if ($b > 0) {
+		if ($b == -1) {
 			while ($k != 0) {
 				$k = $k - 1;
-				echo "\nin function k = ";
+				echo "\nin function, k = ";
+				echo $k;
+			}
+		}
+		else {
+			while ($k < 5) {
+				$k = $k + 1;
+				echo "\nin function, k = ";
 				echo $k;
 			}
 		}
 	}
 
-	echo "\nin global a = ";
-	echo $a;
-	echo "\nin global b = ";
+	myTest($a);
+
+	echo "\nin global, b = ";
 	echo $b;
 
-	myTest($a);
-	myTest($a);
+	myTest($b);
 
 	echo "\nEnd\n";
 ?>

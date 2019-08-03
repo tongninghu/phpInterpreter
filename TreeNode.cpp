@@ -382,11 +382,19 @@ IfAndElse::~IfAndElse() {
 }
 
 void IfAndElse::visit(SemanticAnalyzer* a) {
-  //cout << "visit IfAndElse" << endl;
+//  cout << "visit IfAndElse" << endl;
+  bool stop = false;
   for (int i = 0; i < children.size(); i++) {
-    children[i]->visit(a);
+    if (i < children.size() - 1) {
+      children[i]->visit(a, stop);
+    }
+
+    if (stop || i == children.size() - 1) {
+      children[i]->visit(a);
+      break;
+    }
   }
-  //cout << "leave IfAndElse" << endl;
+//  cout << "leave IfAndElse" << endl;
 }
 
 
@@ -398,19 +406,23 @@ IfOrElse::~IfOrElse() {
   delete compound;
 }
 
+void IfOrElse::visit(SemanticAnalyzer* a, bool& stop) {
+  test->visit(a);
+  if (test->getValue() != "0") {
+    stop = true;
+  }
+}
+
 void IfOrElse::visit(SemanticAnalyzer* a) {   // create symbol table
-  //cout << "visit IfOrElse" << endl;
   ScopedSymbolTable* table = new ScopedSymbolTable("ifelse", a->current_level + 1,\
    a->current_scope);
   a->current_scope = table;
   a->current_level += 1;
 
-  test->visit(a);
   compound->visit(a);
 
   a->current_scope = a->current_scope->enclosing_scope;
   a->current_level -= 1;
-  //cout << "leave IfOrElse" << endl;
 }
 
 

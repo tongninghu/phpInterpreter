@@ -10,7 +10,7 @@ int main(int argc, char * argv[]) {
 	FILE* fp = fopen(argv[1], "r");
 
 	if (!fp) {
-		cout << "Abort: state file open fail." << endl;
+		cout << "Abort: file open fail." << endl;
 		return 0;
 	}
 	else {

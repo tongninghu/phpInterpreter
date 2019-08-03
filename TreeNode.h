@@ -12,6 +12,7 @@ using namespace std;
 class AST {
   public:
     virtual void visit(SemanticAnalyzer* a) {}
+    virtual void visit(SemanticAnalyzer* a, bool& stop) {}
     virtual void visit(SemanticAnalyzer* a, string value, TokenType type, bool funcCall = false) {}
     virtual Token getToken() {}
     virtual string getValue() {}
@@ -127,6 +128,7 @@ class IfOrElse: public AST{
     AST* compound;
 
     ~IfOrElse();
+    virtual void visit(SemanticAnalyzer* a, bool& stop);
     virtual void visit(SemanticAnalyzer* a);
 };
 
