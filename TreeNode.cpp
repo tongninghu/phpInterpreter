@@ -210,6 +210,16 @@ void BinaryOP::visit(SemanticAnalyzer* a) {
     else value = "0";
     valueType = INTEGER_CONST;
   }
+  else if (op.type == AND) {
+    if (left->getValue() != "0" && right->getValue() != "0") value = "1";
+    else value = "0";
+    valueType = INTEGER_CONST;
+  }
+  else if (op.type == OR) {
+    if (left->getValue() != "0" || right->getValue() != "0") value = "1";
+    else value = "0";
+    valueType = INTEGER_CONST;
+  }
   //op.print();
   //cout << "leave BinaryOP" << endl;
 }

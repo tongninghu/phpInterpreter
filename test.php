@@ -3,10 +3,10 @@
 	$password = 115823;
 	$a = 4;
 	$b = -1;
-	$c;
+	$c = 4.5 + $a;
 
-	echo "\nin global, a = ";
-	echo $a;
+	echo "\nin global, c = ";
+	echo $c;
 
 	if ($username == "yunfeng") {
 		echo "\nenter if";
@@ -33,7 +33,7 @@
 			}
 		}
 		else {
-			while ($k < 5) {
+			while ($k < 5 and $b > 0) {
 				$k = $k + 1;
 				echo "\nin function, k = ";
 				echo $k;
