@@ -3,11 +3,11 @@
 
 #include <string>
 #include <vector>
-#include "TreeNode.h"
+//#include "TreeNode.h"
 
+#include "Lexer.h"
 
-class SemanticAnalyzer;
-
+class AST;
 
 using namespace std;
 

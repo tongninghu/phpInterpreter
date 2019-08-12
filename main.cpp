@@ -1,6 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include "Lexer.h"
+#include "Parser.h"
 #include "SemanticAnalyzer.h"
+
+class AST;
 
 using namespace std;
 

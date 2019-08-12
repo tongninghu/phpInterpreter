@@ -1,5 +1,3 @@
-#include <string>
-#include <cctype>
 #include "Lexer.h"
 
 using namespace std;

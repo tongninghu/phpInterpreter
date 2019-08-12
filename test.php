@@ -33,7 +33,7 @@
 			}
 		}
 		else {
-			while ($k < 5 and $b > 0) {
+			while ($k < 5 and $b < 0) {
 				$k = $k + 1;
 				echo "\nin function, k = ";
 				echo $k;

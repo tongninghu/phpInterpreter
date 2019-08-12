@@ -2,7 +2,10 @@
 #define	SEMANTICANALYZER_H
 
 #include <unordered_map>
-#include "Parser.h"
+//#include "Parser.h"
+#include "Lexer.h"
+
+class AST;
 
 using namespace std;
 

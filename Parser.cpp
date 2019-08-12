@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include "SemanticAnalyzer.h"
+#include "TreeNode.h"
 
 using namespace std;
 
